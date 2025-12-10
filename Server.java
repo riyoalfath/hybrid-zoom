@@ -14,12 +14,13 @@ public class Server {
     public static void main(String[] args) {
         try {
             System.out.println("=== MULTI-ROOM ZOOM SERVER STARTED ===");
-            ServerSocket serverSocket = new ServerSocket(TCP_PORT);
-            System.out.println("[SERVER] Listening on port " + TCP_PORT);
+            try (ServerSocket serverSocket = new ServerSocket(TCP_PORT)) {
+                System.out.println("[SERVER] Listening on port " + TCP_PORT);
 
-            while (true) {
-                Socket socket = serverSocket.accept();
-                new Thread(new ClientHandler(socket)).start();
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    new Thread(new ClientHandler(socket)).start();
+                }
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
