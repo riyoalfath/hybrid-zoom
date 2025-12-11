@@ -108,7 +108,6 @@ def connect_to_server():
     print(f"[CONNECT] Mencoba LAN: {SERVER_LAN_IP}:{SERVER_LAN_PORT}")
     try:
         # Buat socket baru setiap kali mau connect
-        sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)     # Reset socket
         sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # TCP Socket
         sock_tcp.settimeout(2)                                          # Timeout 2 detik
         sock_tcp.connect((SERVER_LAN_IP, SERVER_LAN_PORT))              # Coba connect ke Server LAN  
@@ -183,7 +182,11 @@ def handle_tcp():
                             # Cek apakah teman sudah ada di list (biar ga dobel)
                             exists = False
                             for p in peers:
-                                if p['local_ip'] == p_local: exists = True
+                                # Cek kombinasi: IP Public HARUS SAMA & IP Local HARUS SAMA
+                                # Baru bisa dibilang device yang sama
+                                if p['public_ip'] == p_public and p['local_ip'] == p_local:
+                                    exists = True
+                                    break # Ketemu duplikat, stop looping
                             
                             if not exists:
                                 # === [LOGIKA DETEKSI HYBRID FINAL & AMAN] ===
