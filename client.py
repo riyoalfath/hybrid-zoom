@@ -18,10 +18,10 @@ from PIL import Image, ImageTk, ImageDraw
 # =================================================================
 # KONFIGURASI GLOBAL
 # =================================================================
-SERVER_LAN_IP = "192.168.1.15"   # Ganti dengan IP Server di LAN Anda
+SERVER_LAN_IP = "172.27.250.207"   # Ganti dengan IP Server di LAN Anda
 SERVER_LAN_PORT = 8000           # Port TCP Server di LAN
-PINGGY_HOST = "cavcr-140-213-232-121.a.free.pinggy.link" # Ganti dengan Host Pinggy Anda
-PINGGY_PORT = 33681                                      # Port Pinggy
+PINGGY_HOST = "zlizc-140-213-231-170.a.free.pinggy.link" 
+PINGGY_PORT = 46613               # Host & Port Pinggy
 
 GRID_COLS = 3                   # Jumlah kolom grid video
 THUMB_W, THUMB_H = 240, 180     # Ukuran thumbnail video
@@ -58,7 +58,7 @@ else:
 # SOCKET INIT
 # =================================================================
 try:
-    sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)          # UDP Socket
+    sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)          # UDP Socket untuk data
     sock_udp.bind(('0.0.0.0', FIXED_UDP_PORT))                           # Bind ke semua interface
     
     sock_audio_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)    # UDP Socket Audio
@@ -521,7 +521,8 @@ def start_meeting_gui():
     btn_leave.pack(side=tk.RIGHT, padx=20, pady=15)
 
     update_video_gui()
-    root_window.protocol("WM_DELETE_WINDOW", lambda: sys.exit())
+
+    root_window.protocol("WM_DELETE_WINDOW", lambda: sys.exit()) # Pastikan keluar total saat window ditutup
     root_window.mainloop()
     
 def create_input_bg(width, height, bg_color, border_radius, fill_color):
@@ -691,11 +692,11 @@ def start_main_app():
         output_stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True, frames_per_buffer=CHUNK, output_device_index=OUTPUT_INDEX)
     except: pass
 
-    threading.Thread(target=handle_tcp, daemon=True).start()
-    threading.Thread(target=receive_udp_video, daemon=True).start()
-    threading.Thread(target=receive_udp_audio, daemon=True).start()
-    threading.Thread(target=microphone_loop, daemon=True).start()
-    threading.Thread(target=cam_loop, daemon=True).start()
-    start_meeting_gui()
+    threading.Thread(target=handle_tcp, daemon=True).start()            # Thread untuk handle TCP
+    threading.Thread(target=receive_udp_video, daemon=True).start()     # Thread untuk receive video
+    threading.Thread(target=receive_udp_audio, daemon=True).start()     # Thread untuk receive audio
+    threading.Thread(target=microphone_loop, daemon=True).start()       # Thread untuk capture microphone
+    threading.Thread(target=cam_loop, daemon=True).start()              # Thread untuk capture kamera
 
+    start_meeting_gui()
 show_login_panel()

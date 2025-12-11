@@ -1,4 +1,3 @@
-import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,13 +12,14 @@ public class Server {
     public static void main(String[] args) {
         try {
             System.out.println("=== HYBRID ZOOM SERVER STARTED ===");
-            ServerSocket serverSocket = new ServerSocket(TCP_PORT);
-            System.out.println("[SERVER] Listening on port " + TCP_PORT);
+            try (ServerSocket serverSocket = new ServerSocket(TCP_PORT)) {
+                System.out.println("[SERVER] Listening on port " + TCP_PORT);
 
-            while (true) {
-                Socket socket = serverSocket.accept();
-                // Memanggil class ClientHandler yang sekarang sudah di file terpisah
-                new Thread(new ClientHandler(socket)).start();
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    // Memanggil class ClientHandler yang sekarang sudah di file terpisah
+                    new Thread(new ClientHandler(socket)).start();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

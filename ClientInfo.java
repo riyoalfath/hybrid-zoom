@@ -1,6 +1,3 @@
-import java.io.*;
-import java.net.*;
-
 public class ClientInfo {
     // Kita buat public agar bisa diakses langsung oleh Server dan ClientHandler
     public String key;
